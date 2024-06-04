@@ -12,14 +12,27 @@ export default defineConfig((env) => {
   return {
     root,
     mode,
-    base: "./",
+    base: "/",
     build: {
       outDir: `.vite/renderer/${name}`,
     },
     plugins: [pluginExposeRenderer(name)],
     resolve: {
       preserveSymlinks: true,
-      alias: [{ find: "@", replacement: resolve(__dirname, "./src") }],
+      alias: [
+        { find: "@Assets", replacement: resolve(__dirname, "./src/assets") },
+        {
+          find: "@Components",
+          replacement: resolve(__dirname, "./src/renderer/components"),
+        },
+        { find: "@Lib", replacement: resolve(__dirname, "./src/lib") },
+        { find: "@Main", replacement: resolve(__dirname, "./src/main") },
+        {
+          find: "@Renderer",
+          replacement: resolve(__dirname, "./src/renderer"),
+        },
+        { find: "@Types", replacement: resolve(__dirname, "./src/types") },
+      ],
     },
     clearScreen: false,
   } as UserConfig;

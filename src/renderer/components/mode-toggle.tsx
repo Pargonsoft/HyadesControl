@@ -1,13 +1,13 @@
 import { Check, Moon, Sun } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@Components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useTheme } from "@/components/theme-provider";
+} from "@Components/ui/dropdown-menu";
+import { useTheme } from "@Components/theme-provider";
 
 type ModeToggleProps = Partial<typeof Button> &
   React.HTMLAttributes<HTMLButtonElement>;

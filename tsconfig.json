@@ -11,15 +11,18 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
     "jsx": "react-jsx",
     "paths": {
-      "@/*": ["./src/*"]
+      "@Assets/*": ["src/assets/*"],
+      "@Components/*": ["src/renderer/components/*"],
+      "@Lib/*": ["src/lib/*"],
+      "@Main/*": ["src/renderer/*"],
+      "@Renderer/*": ["src/renderer/*"],
+      "@Types/*": ["src/types/*"]
     }
   },
-  "include": [
-    "types/**/*.d.ts",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "forge.env.d.ts"
-  ]
+  "include": ["src/**/*", "forge.env.d.ts"]
 }

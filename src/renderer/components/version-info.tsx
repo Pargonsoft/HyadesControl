@@ -4,9 +4,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+} from "@Components/ui/card";
+import { Separator } from "@Components/ui/separator";
+import { cn } from "@Lib/utils";
 
 type VersionInfoProps = React.HTMLAttributes<HTMLDivElement>;
 

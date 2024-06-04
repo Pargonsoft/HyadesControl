@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import path from "path";
 import { shell } from "electron";
+import log from "electron-log/main";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -18,6 +19,16 @@ const createWindow = () => {
       preload: path.join(__dirname, "preload.js"),
     },
   });
+
+  log.initialize();
+  const level = process.env.NODE_ENV === "development" ? "debug" : "silly";
+  log.transports.console.format =
+    "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
+  log.transports.console.level = level;
+  log.transports.file.level = false;
+  Object.assign(console, log.functions);
+
+  log.info("haha");
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url); // Open URL in user's browser.

@@ -6,7 +6,6 @@ import {
   external,
   pluginHotRestart,
 } from "./vite.base.config";
-import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 
 // https://vitejs.dev/config
 export default defineConfig((env) => {
@@ -24,7 +23,7 @@ export default defineConfig((env) => {
         external,
       },
     },
-    plugins: [pluginHotRestart("restart"), TanStackRouterVite()],
+    plugins: [pluginHotRestart("restart")],
     define,
     resolve: {
       // Load the Node.js entry.
