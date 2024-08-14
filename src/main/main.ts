@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 import { shell } from "electron";
 import log from "electron-log/main";
@@ -11,10 +11,10 @@ if (require("electron-squirrel-startup")) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    minHeight: 600,
-    minWidth: 800,
+    width: 1200,
+    height: 968,
+    minWidth: 1200,
+    minHeight: 968,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -28,12 +28,12 @@ const createWindow = () => {
   log.transports.file.level = false;
   Object.assign(console, log.functions);
 
-  log.info("haha");
-
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url); // Open URL in user's browser.
     return { action: "deny" }; // Prevent the app from opening the URL.
   });
+
+  mainWindow.setMenu(null);
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
@@ -47,6 +47,11 @@ const createWindow = () => {
   // Open the DevTools.
   mainWindow.webContents.openDevTools({
     mode: "detach",
+  });
+
+  ipcMain.on("close-app", () => {
+    log.info("sent cose-app message through IPCRenderer");
+    app.exit(0);
   });
 };
 

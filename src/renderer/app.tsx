@@ -1,21 +1,19 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Navbar from "@Components/navbar";
-import Footer from "@Components/footer";
-import Home from "./views/home";
-import About from "./views/about";
+import Home from "./views/Home";
+import Score from "./views/Score";
+import Game from "./views/Game";
 
 function App() {
   return (
     <div>
-      <Navbar />
-      <div className="p-4">
+      <div className="">
         <Routes>
           <Route index element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/scores" element={<Score />} />
+          <Route path="/game" element={<Game />} />
         </Routes>
       </div>
-      <Footer />
     </div>
   );
 }

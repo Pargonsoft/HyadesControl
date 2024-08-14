@@ -1,8 +1,44 @@
-@tailwind base;
+  @tailwind base;
   @tailwind components;
   @tailwind utilities;
 
   @layer base {
+    @font-face {
+      font-family: 'Quasitron';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Quasitron'), url('https://fonts.cdnfonts.com/s/6507/quasitron.woff') format('woff');
+    }
+    @font-face {
+        font-family: 'Quasitron Italic';
+        font-style: italic;
+        font-weight: 400;
+        src: local('Quasitron Italic'), url('https://fonts.cdnfonts.com/s/6507/quasitroni.woff') format('woff');
+    }
+    @font-face {
+        font-family: 'Quasitron 3D';
+        font-style: normal;
+        font-weight: 700;
+        src: local('Quasitron 3D'), url('https://fonts.cdnfonts.com/s/6507/quasitron3d.woff') format('woff');
+    }
+    @font-face {
+        font-family: 'Quasitron Bold';
+        font-style: normal;
+        font-weight: 700;
+        src: local('Quasitron Bold'), url('https://fonts.cdnfonts.com/s/6507/quasitronb.woff') format('woff');
+    }
+    @font-face {
+        font-family: 'Quasitron 3D Italic';
+        font-style: italic;
+        font-weight: 700;
+        src: local('Quasitron 3D Italic'), url('https://fonts.cdnfonts.com/s/6507/quasitron3di.woff') format('woff');
+    }
+    @font-face {
+        font-family: 'Quasitron Bold Italic';
+        font-style: italic;
+        font-weight: 700;
+        src: local('Quasitron Bold Italic'), url('https://fonts.cdnfonts.com/s/6507/quasitronbi.woff') format('woff');
+    }
     :root {
       --background: 0 0% 100%;
       --foreground: 222.2 84% 4.9%;

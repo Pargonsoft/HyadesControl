@@ -43,7 +43,9 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@pixi/react": "7",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-navigation-menu": "^1.2.0",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
     "class-variance-authority": "^0.7.0",
@@ -52,6 +54,7 @@
     "electron-log": "^5.1.5",
     "electron-squirrel-startup": "^1.0.0",
     "lucide-react": "^0.378.0",
+    "pixi.js": "7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
