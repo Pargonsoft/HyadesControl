@@ -1,6 +1,8 @@
-# Electron Boilerplate
+# Hyades Control Game
 
-## What's included out-of-the-box?
+4x Game still in development
+
+## What tech was used?
 
 - Electron Forge
 - Vite
