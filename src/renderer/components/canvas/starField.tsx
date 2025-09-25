@@ -194,16 +194,21 @@ const run = async (
       const circle = new Sprite(starSelect);
       circle.anchor.set(0.5);
       circle.alpha = 0.7;
+      // Scale the hover circle inversely with zoom level - larger when zoomed out
+      circle.scale.set(Math.max(2, 1 / zoomLevel));
+
       const style = new TextStyle({
         fontFamily: "Arial",
-        fontSize: 80,
+        fontSize: Math.max(300, 60 * (4 / zoomLevel)), // Scale font size directly with zoom - larger when zoomed out
         fontWeight: "bold",
         fill: "0xFFFFFF",
         wordWrap: true,
-        wordWrapWidth: 440,
+        wordWrapWidth: Math.max(300, 200 * (4 / zoomLevel)), // Scale word wrap width with zoom
       });
       const text = new Text(newStar.name, style);
-      text.x = 200;
+      // Position text relative to zoom level
+      text.x = Math.max(100, 75 * (4 / zoomLevel));
+      text.y = -Math.max(50, 30 * (4 / zoomLevel)); // Position above the star
       text.tint = "0xFFFFFF";
 
       newStar.sprite.addChild(circle);
