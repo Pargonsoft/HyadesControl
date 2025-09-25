@@ -10,6 +10,17 @@ interface CelestialObject {
   albedo: number; // Surface reflectivity
 }
 
+interface OrbitalState {
+  semiMajorAxis: number; // AU
+  eccentricity: number; // 0-1
+  inclination: number; // radians
+  longitudeOfAscendingNode: number; // radians
+  argumentOfPeriapsis: number; // radians
+  meanAnomaly: number; // radians
+  meanMotion: number; // radians per day
+  orbitalPeriod: number; // Earth days
+}
+
 interface StarType extends CelestialObject {
   type: "A" | "B" | "F" | "G" | "K" | "M" | "O";
   surfaceTemperature: number; // in Kelvin
@@ -22,6 +33,7 @@ interface PlanetType extends CelestialObject {
   orbitalPeriod: number; // in Earth days
   meanTemperature: number; // in Kelvin
   inGoldilocksZone: boolean;
+  orbitalState?: OrbitalState; // Physics-based orbital parameters
 }
 
 interface AsteroidType extends CelestialObject {
