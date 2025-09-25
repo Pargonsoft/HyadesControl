@@ -19,7 +19,7 @@
       "@Assets/*": ["src/assets/*"],
       "@Components/*": ["src/renderer/components/*"],
       "@Lib/*": ["src/lib/*"],
-      "@Main/*": ["src/renderer/*"],
+      "@Main/*": ["src/main/*"],
       "@Renderer/*": ["src/renderer/*"],
       "@Types/*": ["src/types/*"]
     }
