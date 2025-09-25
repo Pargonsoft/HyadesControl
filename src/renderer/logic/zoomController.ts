@@ -1,19 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Container } from "pixi.js";
-import { AsteroidBeltObject } from "./asteroidBeltGenerator";
-import { OrbitalRenderer } from "./orbitalRenderer";
-
-interface ZoomControllerConfig {
-  app: PIXI.Application;
-  container: Container;
-  system: SystemType;
-  sun: PIXI.Sprite;
-  planetsToDisplay: PlanetType[];
-  orbitalRenderer: OrbitalRenderer;
-  recreateAsteroids: () => AsteroidBeltObject[];
-  zoomIndicator: PIXI.Text;
-  baseOrbitScaleFactor: number;
-}
+import type { ZoomControllerConfig } from "../types";
 
 export class ZoomController {
   private config: ZoomControllerConfig;

@@ -1,28 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Container } from "pixi.js";
-
-// Type for asteroid belt objects (different from AsteroidType in Game.d.ts)
-export interface AsteroidBeltObject {
-  sprite: PIXI.Sprite & { isAsteroid?: boolean };
-  name: string;
-  orbitRadius: number;
-  orbitSpeed: number;
-  angle: number;
-  rotation: number;
-  rotationSpeed: number;
-  beltType: "inner" | "outer";
-}
-
-interface AsteroidBeltConfig {
-  system: SystemType;
-  planetsToDisplay: PlanetType[];
-  orbitScaleFactor: number;
-  zoomLevel: number;
-  container: Container;
-  sun: PIXI.Sprite;
-  Asteroid: PIXI.Texture;
-  applyIsometric: (x: number, y: number) => { x: number; y: number };
-}
+import type { AsteroidBeltConfig, AsteroidBeltObject } from "../types";
 
 export class AsteroidBeltGenerator {
   private config: AsteroidBeltConfig;

@@ -7,82 +7,15 @@ import planet1 from "@Assets/textures/Planet.png";
 import terrestrial1 from "@Assets/textures/Terrestrial1.png";
 import terrestrial2 from "@Assets/textures/Terrestrial2.png";
 
+// Import types
+import type { SystemType, PlanetType, AsteroidBeltObject } from "../../types";
+
 // Import refactored classes
 import { AsteroidBeltGenerator } from "../../logic/asteroidBeltGenerator";
 import { PlanetaryValidator } from "../../logic/planetaryValidator";
 import { OrbitalRenderer } from "../../logic/orbitalRenderer";
 import { ZoomController } from "../../logic/zoomController";
 import { AnimationController } from "../../logic/animationController";
-
-// Type definitions (from Game.d.ts)
-interface CelestialObject {
-  sprite?: Sprite;
-  distance: number; // in AU
-  speed: number; // in km/s
-  angle: number; // in degrees
-  size: number; // in km
-  mass: number; // in kg
-  diameter: number; // in km
-  composition: { [key: string]: number }; // Composition with element percentages
-  albedo: number; // Surface reflectivity
-}
-
-interface OrbitalState {
-  semiMajorAxis: number; // AU
-  eccentricity: number; // 0-1
-  inclination: number; // radians
-  longitudeOfAscendingNode: number; // radians
-  argumentOfPeriapsis: number; // radians
-  meanAnomaly: number; // radians
-  meanMotion: number; // radians per day
-  orbitalPeriod: number; // Earth days
-}
-
-interface StarType extends CelestialObject {
-  type: "A" | "B" | "F" | "G" | "K" | "M" | "O";
-  surfaceTemperature: number; // in Kelvin
-  luminosity: number; // in Solar luminosities
-  metallicity: number; // iron-to-hycrogen ratio
-}
-
-interface PlanetType extends CelestialObject {
-  name: string;
-  orbitalPeriod: number; // in Earth days
-  meanTemperature: number; // in Kelvin
-  inGoldilocksZone: boolean;
-  orbitalState?: OrbitalState; // Physics-based orbital parameters
-}
-
-interface AsteroidType extends CelestialObject {
-  collapsed: boolean;
-}
-
-interface SystemType {
-  id: number;
-  name: string;
-  galX: number;
-  galY: number;
-  galZ: number;
-  mass: number;
-  metallicity: number;
-  sprite?: Sprite;
-  type: "A" | "B" | "F" | "G" | "K" | "M" | "O";
-  stars: StarType[];
-  planets: PlanetType[];
-  asteroids: AsteroidType[];
-  goldilocksZone: { innerBoundary: number; outerBoundary: number }; // in AU
-}
-
-interface AsteroidBeltObject {
-  sprite: PIXI.Sprite & { isAsteroid?: boolean };
-  name: string;
-  orbitRadius: number;
-  orbitSpeed: number;
-  angle: number;
-  rotation: number;
-  rotationSpeed: number;
-  beltType: "inner" | "outer";
-}
 
 const run = async (system: SystemType) => {
   // Create the PixiJS application

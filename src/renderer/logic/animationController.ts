@@ -1,15 +1,5 @@
 import * as PIXI from "pixi.js";
-import { AsteroidBeltObject } from "./asteroidBeltGenerator";
-import { OrbitalRenderer } from "./orbitalRenderer";
-
-interface AnimationControllerConfig {
-  planetsToDisplay: PlanetType[];
-  asteroids: AsteroidBeltObject[];
-  orbitalRenderer: OrbitalRenderer;
-  applyIsometric: (x: number, y: number) => { x: number; y: number };
-  sun: PIXI.Sprite;
-  timeScale: number;
-}
+import type { AnimationControllerConfig, AsteroidBeltObject } from "../types";
 
 export class AnimationController {
   private config: AnimationControllerConfig;

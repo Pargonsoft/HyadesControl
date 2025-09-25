@@ -1,13 +1,5 @@
-import * as PIXI from "pixi.js";
-import { Graphics, Container } from "pixi.js";
-
-interface OrbitalRendererConfig {
-  container: Container;
-  orbitScaleFactor: number;
-  zoomLevel: number;
-  sun: PIXI.Sprite;
-  applyIsometric: (x: number, y: number) => { x: number; y: number };
-}
+import { Graphics } from "pixi.js";
+import type { PlanetType, OrbitalRendererConfig } from "../types";
 
 export class OrbitalRenderer {
   private config: OrbitalRendererConfig;

@@ -1,8 +1,4 @@
-interface PlanetaryValidatorConfig {
-  system: SystemType;
-  maxRadius: number;
-  orbitScaleFactor: number;
-}
+import type { PlanetType, PlanetaryValidatorConfig } from "../types";
 
 export class PlanetaryValidator {
   private config: PlanetaryValidatorConfig;
