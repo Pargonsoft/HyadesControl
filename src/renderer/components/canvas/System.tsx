@@ -24,7 +24,7 @@ const run = async (system: SystemType) => {
     );
   });
 
-  const RandPlanet = await Assets.load(planet1);
+  const desert = await Assets.load(planet1);
   const aqua = await Assets.load(terrestrial2);
   const jungla = await Assets.load(terrestrial1);
 
@@ -154,7 +154,10 @@ const run = async (system: SystemType) => {
 
   // Initialize planets and orbits
   system.planets.forEach((planet) => {
-    planet.sprite = new Sprite(RandPlanet);
+    // Randomly choose from all 3 planet textures
+    const planetTextures = [desert, aqua, jungla];
+    const randomTexture = planetTextures[Math.floor(Math.random() * planetTextures.length)];
+    planet.sprite = new Sprite(randomTexture);
     planet.size = planet.size * 20;
     createOrbitLine(planet.distance * 80);
     createPlanet(planet);
