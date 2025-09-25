@@ -20,12 +20,12 @@ export class OrbitalRenderer {
   createPlanet(planet: PlanetType): void {
     const { zoomLevel } = this.config;
     if (!planet.sprite) return;
-    
+
     planet.sprite.width = (planet.size / 100000) * zoomLevel;
     planet.sprite.height = (planet.size / 100000) * zoomLevel;
     planet.sprite.anchor.x = 0.5;
     planet.sprite.anchor.y = 0.5;
-    
+
     this.updatePlanetPosition(planet);
     this.config.container.addChild(planet.sprite);
   }
@@ -55,7 +55,8 @@ export class OrbitalRenderer {
       const trueAnomaly = (i / numPoints) * 2 * Math.PI;
 
       // Distance from focus (Kepler's equation in polar coordinates)
-      const r = orbitalState.semiMajorAxis * (1 - orbitalState.eccentricity ** 2) /
+      const r =
+        (orbitalState.semiMajorAxis * (1 - orbitalState.eccentricity ** 2)) /
         (1 + orbitalState.eccentricity * Math.cos(trueAnomaly));
 
       // Position in orbital plane
@@ -102,13 +103,18 @@ export class OrbitalRenderer {
 
     // Use current orbital position
     const eccentricAnomaly = orbitalState.meanAnomaly; // Simplified for immediate update
-    const trueAnomaly = 2 * Math.atan2(
-      Math.sqrt(1 + orbitalState.eccentricity) * Math.sin(eccentricAnomaly / 2),
-      Math.sqrt(1 - orbitalState.eccentricity) * Math.cos(eccentricAnomaly / 2)
-    );
+    const trueAnomaly =
+      2 *
+      Math.atan2(
+        Math.sqrt(1 + orbitalState.eccentricity) *
+          Math.sin(eccentricAnomaly / 2),
+        Math.sqrt(1 - orbitalState.eccentricity) *
+          Math.cos(eccentricAnomaly / 2)
+      );
 
     // Distance from star
-    const radius = orbitalState.semiMajorAxis * (1 - orbitalState.eccentricity ** 2) /
+    const radius =
+      (orbitalState.semiMajorAxis * (1 - orbitalState.eccentricity ** 2)) /
       (1 + orbitalState.eccentricity * Math.cos(trueAnomaly));
 
     // Position in orbital plane
@@ -137,7 +143,7 @@ export class OrbitalRenderer {
       screenX * orbitScaleFactor,
       screenY * orbitScaleFactor
     );
-    
+
     planet.sprite.x = sun.x + isoPosition.x;
     planet.sprite.y = sun.y + isoPosition.y;
   }

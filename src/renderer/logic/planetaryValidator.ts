@@ -38,13 +38,16 @@ export class PlanetaryValidator {
 
       // Roche limit (rigid body approximation) - minimum distance to avoid tidal destruction
       const rocheLimit =
-        (2.44 * starRadius * Math.pow(starMass / planetMass, 1 / 3)) / 1000 / 149597870.7; // Convert to AU
+        (2.44 * starRadius * Math.pow(starMass / planetMass, 1 / 3)) /
+        1000 /
+        149597870.7; // Convert to AU
 
       // Stellar irradiation limit - where rocky planets would be vaporized
       // Using equilibrium temperature calculation: T_eq = T_star * sqrt(R_star / (2 * d))
       const maxPlanetTemp = planet.composition?.iron > 0.3 ? 2000 : 1500; // K (higher for iron-rich planets)
       const irradiationLimit =
-        Math.pow(starTemperature / maxPlanetTemp, 2) * (starRadius / (2 * 149597870.7 * 1000)); // AU
+        Math.pow(starTemperature / maxPlanetTemp, 2) *
+        (starRadius / (2 * 149597870.7 * 1000)); // AU
 
       // Atmospheric escape limit - where atmospheres would be stripped away
       const stellarWindLimit = Math.sqrt(starLuminosity) * 0.1; // AU (simplified model)
@@ -116,8 +119,10 @@ export class PlanetaryValidator {
       const meanAnomaly = Math.random() * 2 * Math.PI;
 
       // Calculate orbital period using Kepler's third law (assuming solar mass star)
-      const starMassInSolarMasses = (system.stars[0].mass || 1.989e30) / 1.989e30;
-      const orbitalPeriod = Math.sqrt(Math.pow(semiMajorAxis, 3) / starMassInSolarMasses) * 365.25; // Earth days
+      const starMassInSolarMasses =
+        (system.stars[0].mass || 1.989e30) / 1.989e30;
+      const orbitalPeriod =
+        Math.sqrt(Math.pow(semiMajorAxis, 3) / starMassInSolarMasses) * 365.25; // Earth days
 
       planet.orbitalState = {
         semiMajorAxis,
@@ -135,7 +140,10 @@ export class PlanetaryValidator {
   }
 
   // Function to check if two orbits overlap (violates planetary definition)
-  private checkOrbitClearance(planet1: PlanetType, planet2: PlanetType): boolean {
+  private checkOrbitClearance(
+    planet1: PlanetType,
+    planet2: PlanetType
+  ): boolean {
     const orbit1 = planet1.orbitalState;
     const orbit2 = planet2.orbitalState;
     if (!orbit1 || !orbit2) return true; // Assume clear if no orbital data
@@ -151,7 +159,9 @@ export class PlanetaryValidator {
 
     // Additional check: minimum separation between orbital centers (Hill sphere consideration)
     const minSeparation = 0.3; // AU - minimum separation for stable orbits
-    const orbitalSeparation = Math.abs(orbit1.semiMajorAxis - orbit2.semiMajorAxis);
+    const orbitalSeparation = Math.abs(
+      orbit1.semiMajorAxis - orbit2.semiMajorAxis
+    );
     const hasMinimumSeparation = orbitalSeparation >= minSeparation;
 
     return isCleared && hasMinimumSeparation;

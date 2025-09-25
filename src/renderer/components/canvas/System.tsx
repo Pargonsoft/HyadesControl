@@ -147,9 +147,12 @@ const run = async (system: SystemType) => {
 
   // Filter and validate planets
   const initialPlanets = system.planets.slice(0, maxOrbits);
-  const planetsToDisplay = planetaryValidator.validatePlanetaryStatus(initialPlanets);
+  const planetsToDisplay =
+    planetaryValidator.validatePlanetaryStatus(initialPlanets);
 
-  console.log(`Original planets: ${initialPlanets.length}, Valid planets after clearance check: ${planetsToDisplay.length}`);
+  console.log(
+    `Original planets: ${initialPlanets.length}, Valid planets after clearance check: ${planetsToDisplay.length}`
+  );
 
   // Initialize orbital renderer
   const orbitalRenderer = new OrbitalRenderer({
@@ -164,7 +167,8 @@ const run = async (system: SystemType) => {
   planetsToDisplay.forEach((planet: PlanetType) => {
     // Randomly choose from all 3 planet textures
     const planetTextures = [desert, aqua, jungla];
-    const randomTexture = planetTextures[Math.floor(Math.random() * planetTextures.length)];
+    const randomTexture =
+      planetTextures[Math.floor(Math.random() * planetTextures.length)];
     planet.sprite = new Sprite(randomTexture);
     planet.size = planet.size * 20;
     orbitalRenderer.createOrbitLine(planet);
@@ -184,10 +188,11 @@ const run = async (system: SystemType) => {
   });
 
   // Initialize asteroid belts with realistic positioning
-  let asteroids: AsteroidBeltObject[] = asteroidBeltGenerator.createAsteroidBelts();
+  let asteroids: AsteroidBeltObject[] =
+    asteroidBeltGenerator.createAsteroidBelts();
 
   // Mark asteroids for easy identification
-  asteroids.forEach(asteroid => {
+  asteroids.forEach((asteroid) => {
     asteroid.sprite.isAsteroid = true;
   });
 
@@ -206,9 +211,11 @@ const run = async (system: SystemType) => {
 
   // Function to recreate asteroids (needed for zoom controller)
   const recreateAsteroids = (): AsteroidBeltObject[] => {
-    console.log(`Recreating asteroids at zoom level: ${zoomController.getCurrentZoomLevel()}, orbitScaleFactor: ${zoomController.getCurrentOrbitScaleFactor()}`);
+    console.log(
+      `Recreating asteroids at zoom level: ${zoomController.getCurrentZoomLevel()}, orbitScaleFactor: ${zoomController.getCurrentOrbitScaleFactor()}`
+    );
     console.log(`Sun position during recreation: x=${sun.x}, y=${sun.y}`);
-    
+
     // Update asteroid generator configuration
     const newGenerator = new AsteroidBeltGenerator({
       system,
@@ -220,17 +227,17 @@ const run = async (system: SystemType) => {
       Asteroid,
       applyIsometric,
     });
-    
+
     asteroids = newGenerator.createAsteroidBelts();
-    
+
     // Mark asteroids for easy identification
-    asteroids.forEach(asteroid => {
+    asteroids.forEach((asteroid) => {
       asteroid.sprite.isAsteroid = true;
     });
-    
+
     // Update animation controller with new asteroids
     animationController.updateAsteroids(asteroids);
-    
+
     console.log(`Created ${asteroids.length} asteroids`);
     return asteroids;
   };

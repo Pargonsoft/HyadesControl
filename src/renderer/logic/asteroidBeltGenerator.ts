@@ -33,8 +33,9 @@ export class AsteroidBeltGenerator {
 
   // Create realistic asteroid belts
   createAsteroidBelts(): AsteroidBeltObject[] {
-    const { system, planetsToDisplay, orbitScaleFactor, zoomLevel } = this.config;
-    
+    const { system, planetsToDisplay, orbitScaleFactor, zoomLevel } =
+      this.config;
+
     // Calculate ice line distance (approximate formula based on stellar luminosity)
     const starLuminosity = system.stars[0].luminosity || 1; // Solar luminosities
     const iceLineDistance = Math.sqrt(starLuminosity) * 2.7; // AU (approximation)
@@ -72,7 +73,11 @@ export class AsteroidBeltGenerator {
     // First, try placing it at the traditional asteroid belt distance (ice line * 0.6-0.8)
     for (let factor = 0.6; factor <= 0.8; factor += 0.05) {
       const candidateDistance = iceLineDistance * factor;
-      const safeDistance = this.findSafeAsteroidDistance(candidateDistance, 0.4, planetaryOrbits);
+      const safeDistance = this.findSafeAsteroidDistance(
+        candidateDistance,
+        0.4,
+        planetaryOrbits
+      );
       if (safeDistance) {
         innerBeltDistance = safeDistance;
         break;
@@ -87,7 +92,11 @@ export class AsteroidBeltGenerator {
           // Minimum 0.8 AU gap needed
           const candidateDistance =
             (planetaryOrbits[i].outer + planetaryOrbits[i + 1].inner) / 2;
-          const safeDistance = this.findSafeAsteroidDistance(candidateDistance, 0.3, planetaryOrbits);
+          const safeDistance = this.findSafeAsteroidDistance(
+            candidateDistance,
+            0.3,
+            planetaryOrbits
+          );
           if (safeDistance) {
             innerBeltDistance = safeDistance;
             console.log(
@@ -109,7 +118,9 @@ export class AsteroidBeltGenerator {
         "inner"
       );
       asteroidBelts.push(...innerBelt);
-      console.log(`Inner asteroid belt created at ${innerBeltDistance.toFixed(2)} AU`);
+      console.log(
+        `Inner asteroid belt created at ${innerBeltDistance.toFixed(2)} AU`
+      );
     } else {
       console.log("No safe position found for inner asteroid belt");
     }
@@ -117,12 +128,21 @@ export class AsteroidBeltGenerator {
     // Try to place outer asteroid belt (icy, Kuiper-belt type)
     let outerBeltDistance = null;
     const lastPlanetOuter =
-      planetaryOrbits.length > 0 ? planetaryOrbits[planetaryOrbits.length - 1].outer : 2;
+      planetaryOrbits.length > 0
+        ? planetaryOrbits[planetaryOrbits.length - 1].outer
+        : 2;
 
     // Place outer belt well beyond the last planet with generous clearance
     for (let multiplier = 2.0; multiplier <= 3.5; multiplier += 0.2) {
-      const candidateDistance = Math.max(lastPlanetOuter * multiplier, iceLineDistance * 1.5);
-      const safeDistance = this.findSafeAsteroidDistance(candidateDistance, 0.5, planetaryOrbits);
+      const candidateDistance = Math.max(
+        lastPlanetOuter * multiplier,
+        iceLineDistance * 1.5
+      );
+      const safeDistance = this.findSafeAsteroidDistance(
+        candidateDistance,
+        0.5,
+        planetaryOrbits
+      );
       if (safeDistance) {
         outerBeltDistance = safeDistance;
         break;
@@ -139,7 +159,9 @@ export class AsteroidBeltGenerator {
         "outer"
       );
       asteroidBelts.push(...outerBelt);
-      console.log(`Outer asteroid belt created at ${outerBeltDistance.toFixed(2)} AU`);
+      console.log(
+        `Outer asteroid belt created at ${outerBeltDistance.toFixed(2)} AU`
+      );
     } else {
       console.log("No safe position found for outer asteroid belt");
     }
@@ -187,7 +209,7 @@ export class AsteroidBeltGenerator {
   ): AsteroidBeltObject[] {
     const { container, sun, Asteroid, applyIsometric } = this.config;
     const result: AsteroidBeltObject[] = [];
-    
+
     for (let i = 0; i < count; i++) {
       const asteroid = new PIXI.Sprite(Asteroid);
 

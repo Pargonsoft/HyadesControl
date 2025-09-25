@@ -116,8 +116,16 @@ export class ZoomController {
 
   // Function to update zoom and recalculate positions
   private updateZoom(): void {
-    const { app, container, system, sun, planetsToDisplay, orbitalRenderer, recreateAsteroids } = this.config;
-    
+    const {
+      app,
+      container,
+      system,
+      sun,
+      planetsToDisplay,
+      orbitalRenderer,
+      recreateAsteroids,
+    } = this.config;
+
     this.zoomLevel = this.zoomLevels[this.currentZoomIndex];
     this.orbitScaleFactor = this.config.baseOrbitScaleFactor * this.zoomLevel;
 

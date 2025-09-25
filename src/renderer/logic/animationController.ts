@@ -21,7 +21,8 @@ export class AnimationController {
   // Main animation loop function
   createAnimationLoop(app: PIXI.Application): void {
     app.ticker.add((delta: number) => {
-      const { planetsToDisplay, asteroids, applyIsometric, sun, timeScale } = this.config;
+      const { planetsToDisplay, asteroids, applyIsometric, sun, timeScale } =
+        this.config;
       const deltaTime = timeScale * delta; // Scale time progression
 
       // Animate planets using Newtonian orbital mechanics
@@ -36,20 +37,27 @@ export class AnimationController {
         let eccentricAnomaly = orbitalState.meanAnomaly;
         for (let iteration = 0; iteration < 5; iteration++) {
           const delta_E =
-            (orbitalState.meanAnomaly - eccentricAnomaly + orbitalState.eccentricity * Math.sin(eccentricAnomaly)) /
+            (orbitalState.meanAnomaly -
+              eccentricAnomaly +
+              orbitalState.eccentricity * Math.sin(eccentricAnomaly)) /
             (1 - orbitalState.eccentricity * Math.cos(eccentricAnomaly));
           eccentricAnomaly += delta_E;
           if (Math.abs(delta_E) < 1e-6) break; // Convergence check
         }
 
         // Convert to true anomaly
-        const trueAnomaly = 2 * Math.atan2(
-          Math.sqrt(1 + orbitalState.eccentricity) * Math.sin(eccentricAnomaly / 2),
-          Math.sqrt(1 - orbitalState.eccentricity) * Math.cos(eccentricAnomaly / 2)
-        );
+        const trueAnomaly =
+          2 *
+          Math.atan2(
+            Math.sqrt(1 + orbitalState.eccentricity) *
+              Math.sin(eccentricAnomaly / 2),
+            Math.sqrt(1 - orbitalState.eccentricity) *
+              Math.cos(eccentricAnomaly / 2)
+          );
 
         // Calculate distance from star using elliptical orbit equation
-        const radius = orbitalState.semiMajorAxis * (1 - orbitalState.eccentricity ** 2) /
+        const radius =
+          (orbitalState.semiMajorAxis * (1 - orbitalState.eccentricity ** 2)) /
           (1 + orbitalState.eccentricity * Math.cos(trueAnomaly));
 
         // Position in orbital plane
@@ -90,7 +98,8 @@ export class AnimationController {
         const isoPosition = applyIsometric(x, y);
         asteroid.sprite.x = sun.x + isoPosition.x;
         asteroid.sprite.y = sun.y + isoPosition.y;
-        asteroid.rotation = asteroid.rotationSpeed * delta * Math.PI + asteroid.rotation;
+        asteroid.rotation =
+          asteroid.rotationSpeed * delta * Math.PI + asteroid.rotation;
         asteroid.sprite.rotation = asteroid.rotation;
       });
     });
