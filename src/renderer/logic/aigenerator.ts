@@ -136,6 +136,7 @@ export default function generateStarSystem(
   function generatePlanet(
     index: number,
     starMass: number,
+    starDiameter: number,
     luminosity: number,
     goldilocksZone: { innerBoundary: number; outerBoundary: number },
     orbitalPeriodRatio: number,
@@ -155,14 +156,23 @@ export default function generateStarSystem(
       distance >= goldilocksZone.innerBoundary &&
       distance <= goldilocksZone.outerBoundary;
 
+    // Calculate planet size as a percentage of star diameter
+    // Planets should be 0.5% to 12% of star diameter for realistic proportions
+    // This ensures visual clarity while maintaining realistic scale relationships
+    const minPlanetRatio = 0.005; // 0.5% of star diameter
+    const maxPlanetRatio = 0.12;  // 12% of star diameter
+    const planetDiameterRatio = random(minPlanetRatio, maxPlanetRatio);
+    const planetDiameter = starDiameter * planetDiameterRatio;
+    const planetSize = planetDiameter * 0.8; // Size is slightly smaller than diameter for game logic
+
     return {
       name: PLANET_NAMES[index],
       distance,
       speed,
       angle: random(0, 360),
-      size: random(2000, 70000),
+      size: planetSize,
       mass: random(0.1, 300) * 5.972e24, // Earth masses
-      diameter: random(4000, 140000),
+      diameter: planetDiameter,
       orbitalPeriod: Math.sqrt(Math.pow(distance, 3)) * 365.25, // Kepler's third law
       meanTemperature,
       inGoldilocksZone,
@@ -224,6 +234,7 @@ export default function generateStarSystem(
       generatePlanet(
         i,
         stars[0].mass,
+        stars[0].diameter,
         stars[0].luminosity,
         goldilocksZone,
         orbitalPeriodRatio,
