@@ -244,10 +244,12 @@ const run = async (system: SystemType) => {
     fontFamily: "Arial",
     fontSize: 16,
     fill: 0xffffff,
-    align: "left",
+    align: "right",
   });
-  zoomIndicator.x = 10;
-  zoomIndicator.y = 10;
+  zoomIndicator.x = app.screen.width - 10;
+  zoomIndicator.y = app.screen.height - 30;
+  zoomIndicator.anchor.x = 1; // Right-align the text
+  zoomIndicator.anchor.y = 1; // Bottom-align the text
   app.stage.addChild(zoomIndicator);
 
   // Function to update zoom indicator
