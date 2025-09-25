@@ -1,3 +1,5 @@
+import type { SystemType, PlanetType, StarType, AsteroidType, OrbitalState } from "../types";
+
 // Typical albedo values for various compositions
 const ALBEDO_VALUES: { [key: string]: number } = {
   hydrogen: 0.1,
@@ -133,28 +135,112 @@ export default function generateStarSystem(
     return meanTemperature;
   }
 
+  function calculateHillSphere(
+    planetMass: number,
+    starMass: number,
+    orbitalDistance: number
+  ): number {
+    // Hill sphere radius in AU
+    return orbitalDistance * Math.pow(planetMass / (3 * starMass), 1/3);
+  }
+
+  function validateOrbitalSpacing(
+    planets: PlanetType[],
+    starMass: number
+  ): { isValid: boolean; minSeparation: number; issues: string[] } {
+    const issues: string[] = [];
+    let minSeparation = Infinity;
+    let isValid = true;
+
+    // Sort planets by distance
+    const sortedPlanets = [...planets].sort((a, b) => a.distance - b.distance);
+
+    for (let i = 0; i < sortedPlanets.length - 1; i++) {
+      const inner = sortedPlanets[i];
+      const outer = sortedPlanets[i + 1];
+      
+      const separation = outer.distance - inner.distance;
+      minSeparation = Math.min(minSeparation, separation);
+
+      // Calculate required minimum separation based on Hill spheres
+      const innerHill = calculateHillSphere(inner.mass, starMass, inner.distance);
+      const outerHill = calculateHillSphere(outer.mass, starMass, outer.distance);
+      const requiredSeparation = 2.4 * (innerHill + outerHill); // Mutual Hill radius rule
+
+      if (separation < requiredSeparation) {
+        isValid = false;
+        issues.push(
+          `Planets ${inner.name} and ${outer.name} too close: ${separation.toFixed(3)} AU < ${requiredSeparation.toFixed(3)} AU required`
+        );
+      }
+
+      // Check for reasonable spacing (planets shouldn't be extremely close)
+      if (separation < 0.1) {
+        isValid = false;
+        issues.push(`Planets ${inner.name} and ${outer.name} extremely close: ${separation.toFixed(3)} AU`);
+      }
+    }
+
+    return { isValid, minSeparation: minSeparation === Infinity ? 0 : minSeparation, issues };
+  }
+
+  function generateStableOrbitalDistances(
+    numPlanets: number,
+    starMass: number,
+    innerLimit = 0.1,
+    outerLimit = 50
+  ): number[] {
+    const distances: number[] = [];
+    
+    if (numPlanets === 0) return distances;
+
+    // Start with first planet at a reasonable distance from the star
+    let currentDistance = random(innerLimit, Math.max(innerLimit + 0.3, 0.7));
+    distances.push(currentDistance);
+
+    // Generate subsequent planets with proper spacing based on Hill spheres and resonances
+    for (let i = 1; i < numPlanets; i++) {
+      // Use Titius-Bode-like progression with some randomization
+      // Each planet should be 1.4 to 2.0 times farther than the previous one
+      const spacingFactor = random(1.4, 2.0);
+      currentDistance = currentDistance * spacingFactor;
+      
+      // Add some random variation to avoid perfect geometric progression
+      const variation = random(0.9, 1.1);
+      currentDistance = currentDistance * variation;
+      
+      // Ensure we don't exceed outer limit
+      if (currentDistance > outerLimit) {
+        currentDistance = outerLimit;
+        distances.push(currentDistance);
+        break;
+      }
+      
+      distances.push(currentDistance);
+    }
+
+    return distances;
+  }
+
   function generatePlanet(
     index: number,
     starMass: number,
     starDiameter: number,
     luminosity: number,
     goldilocksZone: { innerBoundary: number; outerBoundary: number },
-    orbitalPeriodRatio: number,
-    previousPlanetDistance: number
+    orbitalDistance: number
   ): PlanetType {
-    const distance =
-      previousPlanetDistance * Math.pow(orbitalPeriodRatio, 2 / 3); // AU
-    const speed = Math.sqrt((G * starMass) / (distance * AU)) / 1000; // km/s
+    const speed = Math.sqrt((G * starMass) / (orbitalDistance * AU)) / 1000; // km/s
     const composition = generateComposition(metallicity);
     const albedo = calculateAlbedo(composition);
     const meanTemperature = calculateMeanTemperature(
-      distance,
+      orbitalDistance,
       luminosity,
       albedo
     );
     const inGoldilocksZone =
-      distance >= goldilocksZone.innerBoundary &&
-      distance <= goldilocksZone.outerBoundary;
+      orbitalDistance >= goldilocksZone.innerBoundary &&
+      orbitalDistance <= goldilocksZone.outerBoundary;
 
     // Calculate planet size as a percentage of star diameter
     // Planets should be 0.5% to 12% of star diameter for realistic proportions
@@ -165,19 +251,43 @@ export default function generateStarSystem(
     const planetDiameter = starDiameter * planetDiameterRatio;
     const planetSize = planetDiameter * 0.8; // Size is slightly smaller than diameter for game logic
 
+    // Generate realistic mass based on size and type
+    const planetMass = random(0.1, 300) * 5.972e24; // Earth masses
+
+    // Generate stable, low-eccentricity orbital elements
+    const eccentricity = random(0.001, 0.05); // Very low eccentricity for stability
+    const inclination = random(0, 0.1); // Low inclination in radians (~0-6 degrees)
+    const longitudeOfAscendingNode = random(0, 2 * Math.PI);
+    const argumentOfPeriapsis = random(0, 2 * Math.PI);
+    const meanAnomaly = random(0, 2 * Math.PI);
+    const orbitalPeriod = Math.sqrt(Math.pow(orbitalDistance, 3)) * 365.25; // Kepler's third law in days
+    const meanMotion = (2 * Math.PI) / orbitalPeriod; // radians per day
+
+    const orbitalState: OrbitalState = {
+      semiMajorAxis: orbitalDistance,
+      eccentricity,
+      inclination,
+      longitudeOfAscendingNode,
+      argumentOfPeriapsis,
+      meanAnomaly,
+      meanMotion,
+      orbitalPeriod
+    };
+
     return {
       name: PLANET_NAMES[index],
-      distance,
+      distance: orbitalDistance,
       speed,
       angle: random(0, 360),
       size: planetSize,
-      mass: random(0.1, 300) * 5.972e24, // Earth masses
+      mass: planetMass,
       diameter: planetDiameter,
-      orbitalPeriod: Math.sqrt(Math.pow(distance, 3)) * 365.25, // Kepler's third law
+      orbitalPeriod,
       meanTemperature,
       inGoldilocksZone,
       composition,
       albedo,
+      orbitalState
     };
   }
 
@@ -227,9 +337,17 @@ export default function generateStarSystem(
 
   const numPlanets = Math.round(random(1, 15));
   const planets = [];
-  let previousPlanetDistance = random(0.1, 0.5); // Initial distance of the first planet
-  for (let i = 0; i < numPlanets; i++) {
-    const orbitalPeriodRatio = random(1.3, 2.0); // Ratio for orbital resonance
+  
+  // Generate stable, non-overlapping orbital distances
+  const orbitalDistances = generateStableOrbitalDistances(
+    numPlanets, 
+    stars[0].mass,
+    0.1,  // Inner limit: 0.1 AU (close to star)
+    50    // Outer limit: 50 AU (outer solar system)
+  );
+  
+  // Generate planets at the calculated distances
+  for (let i = 0; i < orbitalDistances.length; i++) {
     planets.push(
       generatePlanet(
         i,
@@ -237,11 +355,17 @@ export default function generateStarSystem(
         stars[0].diameter,
         stars[0].luminosity,
         goldilocksZone,
-        orbitalPeriodRatio,
-        previousPlanetDistance
+        orbitalDistances[i]
       )
     );
-    previousPlanetDistance = planets[i].distance;
+  }
+
+  // Validate orbital spacing for debugging/logging
+  const validation = validateOrbitalSpacing(planets, stars[0].mass);
+  if (!validation.isValid) {
+    console.warn(`Orbital spacing issues for ${starName}:`, validation.issues);
+  } else {
+    console.log(`${starName}: Valid orbital spacing, min separation: ${validation.minSeparation.toFixed(3)} AU`);
   }
 
   const numAsteroids = Math.round(random(100, 10000));
