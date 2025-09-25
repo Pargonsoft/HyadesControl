@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <div
-      className="container h-screen"
+      className="container h-screen w-screen"
       style={{ backgroundImage: `url(${bg}`, backgroundSize: "cover" }}
     >
       <div className="flex items-center place-content-center h-full">
