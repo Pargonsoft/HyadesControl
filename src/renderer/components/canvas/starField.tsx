@@ -40,6 +40,113 @@ const run = async (
   const starStretch = 5;
   const starBaseSize = 0.05;
 
+  // Zoom functionality
+  let zoomLevel = 1; // Current zoom level
+  const zoomLevels = [0.25, 0.5, 1, 2, 4]; // Five zoom levels: 25%, 50%, 100%, 200%, 400%
+  let currentZoomIndex = 2; // Start at 100% zoom (index 2)
+
+  // Panning functionality
+  let panOffsetX = 0; // Horizontal pan offset
+  let panOffsetY = 0; // Vertical pan offset
+  const panSpeed = 50; // Pan speed in pixels per key press
+
+  // Get canvas center dynamically with pan offset
+  const getCenterX = () => app.screen.width / 2 + panOffsetX;
+  const getCenterY = () => app.screen.height / 2 + panOffsetY;
+
+  // Function to update zoom and pan, repositioning stars
+  const updateZoom = () => {
+    zoomLevel = zoomLevels[currentZoomIndex];
+
+    // Reposition all stars with new zoom and pan offsets
+    for (let i = 1; i < starList.length; i++) {
+      if (starList[i].sprite) {
+        starList[i].sprite.x = starList[i].galX * 25 * zoomLevel + getCenterX();
+        starList[i].sprite.y = starList[i].galY * 25 * zoomLevel + getCenterY();
+        starList[i].sprite.height =
+          (starList[i].stars[0].diameter / 100000) * 2 * zoomLevel;
+        starList[i].sprite.width =
+          (starList[i].stars[0].diameter / 100000) * 2 * zoomLevel;
+      }
+    }
+  };
+
+  // Add keyboard controls for zoom and panning
+  const handleKeyPress = (event: KeyboardEvent) => {
+    let needsUpdate = false;
+
+    if (event.key === "+" || event.key === "=") {
+      // Zoom in
+      if (currentZoomIndex < zoomLevels.length - 1) {
+        currentZoomIndex++;
+        needsUpdate = true;
+      }
+    } else if (event.key === "-") {
+      // Zoom out
+      if (currentZoomIndex > 0) {
+        currentZoomIndex--;
+        needsUpdate = true;
+      }
+    } else if (event.key === "c" || event.key === "C") {
+      // Center/Reset zoom and pan
+      currentZoomIndex = 2; // Reset to 100% zoom (index 2 in new array)
+      panOffsetX = 0; // Reset pan
+      panOffsetY = 0; // Reset pan
+      needsUpdate = true;
+    } else if (event.key === "ArrowUp") {
+      // Pan up
+      panOffsetY -= panSpeed;
+      needsUpdate = true;
+    } else if (event.key === "ArrowDown") {
+      // Pan down
+      panOffsetY += panSpeed;
+      needsUpdate = true;
+    } else if (event.key === "ArrowLeft") {
+      // Pan left
+      panOffsetX -= panSpeed;
+      needsUpdate = true;
+    } else if (event.key === "ArrowRight") {
+      // Pan right
+      panOffsetX += panSpeed;
+      needsUpdate = true;
+    }
+
+    if (needsUpdate) {
+      updateZoom(); // This function now handles both zoom and pan updates
+    }
+  };
+
+  // Add event listener for keyboard controls
+  window.addEventListener("keydown", handleKeyPress);
+
+  // Add mouse wheel zoom functionality
+  const handleWheel = (event: WheelEvent) => {
+    event.preventDefault(); // Prevent page scrolling
+
+    let needsUpdate = false;
+
+    if (event.deltaY < 0) {
+      // Scroll up - zoom in
+      if (currentZoomIndex < zoomLevels.length - 1) {
+        currentZoomIndex++;
+        needsUpdate = true;
+      }
+    } else if (event.deltaY > 0) {
+      // Scroll down - zoom out
+      if (currentZoomIndex > 0) {
+        currentZoomIndex--;
+        needsUpdate = true;
+      }
+    }
+
+    if (needsUpdate) {
+      updateZoom();
+    }
+  };
+
+  // Add event listener for mouse wheel
+  window.addEventListener("wheel", handleWheel, { passive: false });
+
   // Create the stars
   const backgroundStars: Array<backgroundStarType> = [];
 
@@ -72,10 +179,11 @@ const run = async (
       Math.round((newStar.stars[0].diameter / 100000) * 2)
     );
 
-    newStar.sprite.x = starList[i].galX * 25 + 550;
-    newStar.sprite.y = starList[i].galY * 25 + 400;
-    newStar.sprite.height = (newStar.stars[0].diameter / 100000) * 2;
-    newStar.sprite.width = (newStar.stars[0].diameter / 100000) * 2;
+    newStar.sprite.x = starList[i].galX * 25 * zoomLevel + getCenterX();
+    newStar.sprite.y = starList[i].galY * 25 * zoomLevel + getCenterY();
+    newStar.sprite.height =
+      (newStar.stars[0].diameter / 100000) * 2 * zoomLevel;
+    newStar.sprite.width = (newStar.stars[0].diameter / 100000) * 2 * zoomLevel;
     newStar.sprite.anchor.set(0.5);
 
     // hover effects
@@ -171,6 +279,15 @@ const run = async (
   app.ticker.add((deltaTime) => {
     easeBackgroundStars(deltaTime);
   });
+
+  // Handle window resize to recenter stars
+  const handleResize = () => {
+    updateZoom(); // Recenter stars when window resizes
+  };
+
+  window.addEventListener("resize", handleResize);
+
+  // Note: Event listeners should be cleaned up when component unmounts
 };
 
 export default run;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import log from "electron-log/renderer";
+import { FaHome } from "react-icons/fa";
 import ClusterView from "@Components/canvas/ClusterView";
 
 import GameNav from "@Components/game/GameNav";
@@ -62,12 +63,51 @@ const Game = () => {
     <div className="container w-screen h-screen p-0">
       <GameNav />
       {mode === "starMap" ? (
-        <Render>
-          <ClusterView
-            systemCatalog={starSystems}
-            selectedSystem={selectedSystem}
-          />
-        </Render>
+        <div className="relative">
+          <Render>
+            <ClusterView
+              systemCatalog={starSystems}
+              selectedSystem={selectedSystem}
+            />
+          </Render>
+          {/* Zoom Controls Overlay */}
+          <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
+            <button
+              className="w-10 h-10 bg-slate-700 hover:bg-slate-600 border border-slate-500 rounded-md flex items-center justify-center text-white font-bold text-lg shadow-lg"
+              onClick={() =>
+                window.dispatchEvent(new KeyboardEvent("keydown", { key: "+" }))
+              }
+              title="Zoom In"
+            >
+              +
+            </button>
+            <button
+              className="w-10 h-10 bg-slate-700 hover:bg-slate-600 border border-slate-500 rounded-md flex items-center justify-center text-white font-bold text-lg shadow-lg"
+              onClick={() =>
+                window.dispatchEvent(new KeyboardEvent("keydown", { key: "-" }))
+              }
+              title="Zoom Out"
+            >
+              −
+            </button>
+            <button
+              className="w-10 h-10 bg-slate-700 hover:bg-slate-600 border border-slate-500 rounded-md flex items-center justify-center text-white text-xs shadow-lg"
+              onClick={() =>
+                window.dispatchEvent(new KeyboardEvent("keydown", { key: "c" }))
+              }
+              title="Center/Reset Zoom & Pan"
+            >
+              <FaHome size={14} />
+            </button>
+          </div>
+          {/* Controls Help Overlay */}
+          <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white text-xs p-2 rounded-md z-10">
+            <div>Arrow Keys: Pan view</div>
+            <div>+/- Keys: Zoom in/out</div>
+            <div>Mouse Wheel: Zoom in/out</div>
+            <div>C Key: Center & reset</div>
+          </div>
+        </div>
       ) : (
         <Render>
           <System system={system} />
