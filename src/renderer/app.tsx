@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Home from "./views/Home";
+import Home from "./views/home";
 import Score from "./views/Score";
 import Game from "./views/Game";
 

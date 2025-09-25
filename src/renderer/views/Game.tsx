@@ -6,7 +6,7 @@ import GameNav from "@Components/game/GameNav";
 import Render from "@Components/canvas/Render";
 import System from "@Components/canvas/System";
 import starCatalog from "@Assets/data/nearest.json";
-import generateStarSystem from "@Components/game/aigenerator";
+import generateStarSystem from "@Main/logic/aigenerator";
 
 const Game = () => {
   const [mode, setMode] = useState<"starMap" | "starView">("starMap");
