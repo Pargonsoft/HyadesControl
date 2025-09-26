@@ -1,4 +1,10 @@
-import type { SystemType, PlanetType, StarType, AsteroidType, OrbitalState } from "../types";
+import type {
+  SystemType,
+  PlanetType,
+  StarType,
+  AsteroidType,
+  OrbitalState,
+} from "../types";
 
 // Typical albedo values for various compositions
 const ALBEDO_VALUES: { [key: string]: number } = {
@@ -66,32 +72,32 @@ export default function generateStarSystem(
       mass < 0.8
         ? "M"
         : mass < 1.04
-        ? "K"
-        : mass < 1.4
-        ? "G"
-        : mass < 2.1
-        ? "F"
-        : "A";
+          ? "K"
+          : mass < 1.4
+            ? "G"
+            : mass < 2.1
+              ? "F"
+              : "A";
     const surfaceTemperature =
       type === "M"
         ? random(2400, 3700)
         : type === "K"
-        ? random(3700, 5200)
-        : type === "G"
-        ? random(5200, 6000)
-        : type === "F"
-        ? random(6000, 7500)
-        : random(7500, 10000);
+          ? random(3700, 5200)
+          : type === "G"
+            ? random(5200, 6000)
+            : type === "F"
+              ? random(6000, 7500)
+              : random(7500, 10000);
     const luminosity =
       type === "M"
         ? random(0.01, 0.08)
         : type === "K"
-        ? random(0.08, 0.6)
-        : type === "G"
-        ? random(0.6, 1.5)
-        : type === "F"
-        ? random(1.5, 5)
-        : random(5, 25);
+          ? random(0.08, 0.6)
+          : type === "G"
+            ? random(0.6, 1.5)
+            : type === "F"
+              ? random(1.5, 5)
+              : random(5, 25);
     const composition = generateComposition(metallicity);
     const albedo = calculateAlbedo(composition);
 
@@ -141,7 +147,7 @@ export default function generateStarSystem(
     orbitalDistance: number
   ): number {
     // Hill sphere radius in AU
-    return orbitalDistance * Math.pow(planetMass / (3 * starMass), 1/3);
+    return orbitalDistance * Math.pow(planetMass / (3 * starMass), 1 / 3);
   }
 
   function validateOrbitalSpacing(
@@ -158,13 +164,21 @@ export default function generateStarSystem(
     for (let i = 0; i < sortedPlanets.length - 1; i++) {
       const inner = sortedPlanets[i];
       const outer = sortedPlanets[i + 1];
-      
+
       const separation = outer.distance - inner.distance;
       minSeparation = Math.min(minSeparation, separation);
 
       // Calculate required minimum separation based on Hill spheres
-      const innerHill = calculateHillSphere(inner.mass, starMass, inner.distance);
-      const outerHill = calculateHillSphere(outer.mass, starMass, outer.distance);
+      const innerHill = calculateHillSphere(
+        inner.mass,
+        starMass,
+        inner.distance
+      );
+      const outerHill = calculateHillSphere(
+        outer.mass,
+        starMass,
+        outer.distance
+      );
       const requiredSeparation = 2.4 * (innerHill + outerHill); // Mutual Hill radius rule
 
       if (separation < requiredSeparation) {
@@ -177,11 +191,17 @@ export default function generateStarSystem(
       // Check for reasonable spacing (planets shouldn't be extremely close)
       if (separation < 0.1) {
         isValid = false;
-        issues.push(`Planets ${inner.name} and ${outer.name} extremely close: ${separation.toFixed(3)} AU`);
+        issues.push(
+          `Planets ${inner.name} and ${outer.name} extremely close: ${separation.toFixed(3)} AU`
+        );
       }
     }
 
-    return { isValid, minSeparation: minSeparation === Infinity ? 0 : minSeparation, issues };
+    return {
+      isValid,
+      minSeparation: minSeparation === Infinity ? 0 : minSeparation,
+      issues,
+    };
   }
 
   function generateStableOrbitalDistances(
@@ -191,7 +211,7 @@ export default function generateStarSystem(
     outerLimit = 50
   ): number[] {
     const distances: number[] = [];
-    
+
     if (numPlanets === 0) return distances;
 
     // Start with first planet at a reasonable distance from the star
@@ -204,18 +224,18 @@ export default function generateStarSystem(
       // Each planet should be 1.4 to 2.0 times farther than the previous one
       const spacingFactor = random(1.4, 2.0);
       currentDistance = currentDistance * spacingFactor;
-      
+
       // Add some random variation to avoid perfect geometric progression
       const variation = random(0.9, 1.1);
       currentDistance = currentDistance * variation;
-      
+
       // Ensure we don't exceed outer limit
       if (currentDistance > outerLimit) {
         currentDistance = outerLimit;
         distances.push(currentDistance);
         break;
       }
-      
+
       distances.push(currentDistance);
     }
 
@@ -246,7 +266,7 @@ export default function generateStarSystem(
     // Planets should be 0.5% to 12% of star diameter for realistic proportions
     // This ensures visual clarity while maintaining realistic scale relationships
     const minPlanetRatio = 0.005; // 0.5% of star diameter
-    const maxPlanetRatio = 0.12;  // 12% of star diameter
+    const maxPlanetRatio = 0.12; // 12% of star diameter
     const planetDiameterRatio = random(minPlanetRatio, maxPlanetRatio);
     const planetDiameter = starDiameter * planetDiameterRatio;
     const planetSize = planetDiameter * 0.8; // Size is slightly smaller than diameter for game logic
@@ -271,7 +291,7 @@ export default function generateStarSystem(
       argumentOfPeriapsis,
       meanAnomaly,
       meanMotion,
-      orbitalPeriod
+      orbitalPeriod,
     };
 
     return {
@@ -287,7 +307,7 @@ export default function generateStarSystem(
       inGoldilocksZone,
       composition,
       albedo,
-      orbitalState
+      orbitalState,
     };
   }
 
@@ -337,15 +357,15 @@ export default function generateStarSystem(
 
   const numPlanets = Math.round(random(1, 15));
   const planets = [];
-  
+
   // Generate stable, non-overlapping orbital distances
   const orbitalDistances = generateStableOrbitalDistances(
-    numPlanets, 
+    numPlanets,
     stars[0].mass,
-    0.1,  // Inner limit: 0.1 AU (close to star)
-    50    // Outer limit: 50 AU (outer solar system)
+    0.1, // Inner limit: 0.1 AU (close to star)
+    50 // Outer limit: 50 AU (outer solar system)
   );
-  
+
   // Generate planets at the calculated distances
   for (let i = 0; i < orbitalDistances.length; i++) {
     planets.push(
@@ -365,7 +385,9 @@ export default function generateStarSystem(
   if (!validation.isValid) {
     console.warn(`Orbital spacing issues for ${starName}:`, validation.issues);
   } else {
-    console.log(`${starName}: Valid orbital spacing, min separation: ${validation.minSeparation.toFixed(3)} AU`);
+    console.log(
+      `${starName}: Valid orbital spacing, min separation: ${validation.minSeparation.toFixed(3)} AU`
+    );
   }
 
   const numAsteroids = Math.round(random(100, 10000));
