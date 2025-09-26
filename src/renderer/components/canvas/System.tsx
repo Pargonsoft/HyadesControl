@@ -175,6 +175,17 @@ const run = async (system: SystemType) => {
     return asteroids;
   };
 
+  // Initialize animation controller
+  const animationController = new AnimationController({
+    planetsToDisplay,
+    asteroids,
+    orbitalRenderer,
+    orbitScaleFactor: baseOrbitScaleFactor,
+    applyIsometric,
+    sun,
+    timeScale: 1, // 1 Earth day per frame
+  });
+
   // Initialize zoom controller
   const zoomController = new ZoomController({
     app,
@@ -183,19 +194,10 @@ const run = async (system: SystemType) => {
     sun,
     planetsToDisplay,
     orbitalRenderer,
+    animationController,
     recreateAsteroids,
     zoomIndicator,
     baseOrbitScaleFactor,
-  });
-
-  // Initialize animation controller
-  const animationController = new AnimationController({
-    planetsToDisplay,
-    asteroids,
-    orbitalRenderer,
-    applyIsometric,
-    sun,
-    timeScale: 1, // 1 Earth day per frame
   });
 
   // Set up zoom indicator and start animation

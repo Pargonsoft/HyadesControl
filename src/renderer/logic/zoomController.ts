@@ -109,6 +109,7 @@ export class ZoomController {
       sun,
       planetsToDisplay,
       orbitalRenderer,
+      animationController,
       recreateAsteroids,
     } = this.config;
 
@@ -122,10 +123,11 @@ export class ZoomController {
       }
     });
 
-    // Update star size and position
+    // Update star size and position with constrained scaling
     const apparentSize = system.stars[0].diameter / 100000;
-    sun.width = apparentSize * 4 * this.zoomLevel;
-    sun.height = apparentSize * 4 * this.zoomLevel;
+    const starScaleFactor = Math.min(this.zoomLevel, 2); // Cap star scaling at 2x
+    sun.width = apparentSize * 4 * starScaleFactor;
+    sun.height = apparentSize * 4 * starScaleFactor;
     sun.x = app.screen.width / 2 + this.panOffsetX;
     sun.y = app.screen.height / 2 + this.panOffsetY;
 
@@ -133,23 +135,35 @@ export class ZoomController {
     container.removeChildren(); // Clear existing graphics
     container.addChild(sun); // Re-add star
 
-    // Update orbital renderer configuration
+    // Update orbital renderer configuration first
     orbitalRenderer.updateConfig({
       orbitScaleFactor: this.orbitScaleFactor,
       zoomLevel: this.zoomLevel,
     });
 
-    // Recreate orbits and planets with new scale
+    // Update animation controller orbit scale factor for proper planet positioning
+    animationController.updateOrbitScaleFactor(this.orbitScaleFactor);
+
+    // Recreate orbits and planets with improved scaling
     planetsToDisplay.forEach((planet: PlanetType) => {
       if (planet.sprite) {
-        // Update planet size
-        planet.sprite.width = (planet.size / 100000) * this.zoomLevel;
-        planet.sprite.height = (planet.size / 100000) * this.zoomLevel;
+        // Calculate planet size with logarithmic scaling to prevent oversizing
+        const basePlanetSize = planet.size / 100000;
+
+        // Use logarithmic scaling: more zoom = less size increase
+        // At zoomLevel 1: scaleFactor = 1
+        // At zoomLevel 2: scaleFactor = 1.3
+        // At zoomLevel 4: scaleFactor = 1.6
+        // At zoomLevel 8: scaleFactor = 1.9
+        const planetScaleFactor = 1 + Math.log2(this.zoomLevel) * 0.3;
+
+        planet.sprite.width = basePlanetSize * planetScaleFactor;
+        planet.sprite.height = basePlanetSize * planetScaleFactor;
 
         // Recreate orbit line with new scale
         orbitalRenderer.createOrbitLine(planet);
 
-        // Update planet position
+        // Update planet position with the new orbit scale
         orbitalRenderer.updatePlanetPosition(planet);
 
         container.addChild(planet.sprite);

@@ -3,6 +3,7 @@ import { Container, Sprite } from "pixi.js";
 import { SystemType, PlanetType } from "./celestial";
 import { AsteroidBeltObject } from "./asteroid";
 import { OrbitalRenderer } from "../logic/orbitalRenderer";
+import { AnimationController } from "../logic/animationController";
 
 /**
  * Configuration for AsteroidBeltGenerator
@@ -45,6 +46,7 @@ export interface AnimationControllerConfig {
   planetsToDisplay: PlanetType[];
   asteroids: AsteroidBeltObject[];
   orbitalRenderer: OrbitalRenderer;
+  orbitScaleFactor: number;
   applyIsometric: (x: number, y: number) => { x: number; y: number };
   sun: Sprite;
   timeScale: number;
@@ -60,6 +62,7 @@ export interface ZoomControllerConfig {
   sun: Sprite;
   planetsToDisplay: PlanetType[];
   orbitalRenderer: OrbitalRenderer;
+  animationController: AnimationController;
   recreateAsteroids: () => AsteroidBeltObject[];
   zoomIndicator: PIXI.Text;
   baseOrbitScaleFactor: number;

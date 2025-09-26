@@ -13,8 +13,12 @@ export class OrbitalRenderer {
     const { zoomLevel } = this.config;
     if (!planet.sprite) return;
 
-    planet.sprite.width = (planet.size / 100000) * zoomLevel;
-    planet.sprite.height = (planet.size / 100000) * zoomLevel;
+    // Calculate planet size with logarithmic scaling to prevent oversizing
+    const basePlanetSize = planet.size / 100000;
+    const planetScaleFactor = 1 + Math.log2(zoomLevel) * 0.3;
+
+    planet.sprite.width = basePlanetSize * planetScaleFactor;
+    planet.sprite.height = basePlanetSize * planetScaleFactor;
     planet.sprite.anchor.x = 0.5;
     planet.sprite.anchor.y = 0.5;
 

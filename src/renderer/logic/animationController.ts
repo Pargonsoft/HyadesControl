@@ -11,8 +11,14 @@ export class AnimationController {
   // Main animation loop function
   createAnimationLoop(app: PIXI.Application): void {
     app.ticker.add((delta: number) => {
-      const { planetsToDisplay, asteroids, applyIsometric, sun, timeScale } =
-        this.config;
+      const {
+        planetsToDisplay,
+        asteroids,
+        orbitScaleFactor,
+        applyIsometric,
+        sun,
+        timeScale,
+      } = this.config;
       const deltaTime = timeScale * delta; // Scale time progression
 
       // Animate planets using Newtonian orbital mechanics
@@ -75,7 +81,10 @@ export class AnimationController {
         const screenY = x2 * sinLAN + y2 * cosLAN;
 
         // Apply isometric transformation and position relative to star
-        const isoPosition = applyIsometric(screenX * 80, screenY * 80); // Use base scale factor
+        const isoPosition = applyIsometric(
+          screenX * orbitScaleFactor,
+          screenY * orbitScaleFactor
+        );
         planet.sprite.x = sun.x + isoPosition.x;
         planet.sprite.y = sun.y + isoPosition.y;
       });
@@ -98,6 +107,11 @@ export class AnimationController {
   // Update asteroids reference (useful when recreating asteroids during zoom)
   updateAsteroids(newAsteroids: AsteroidBeltObject[]): void {
     this.config.asteroids = newAsteroids;
+  }
+
+  // Update orbit scale factor (useful when zoom changes)
+  updateOrbitScaleFactor(orbitScaleFactor: number): void {
+    this.config.orbitScaleFactor = orbitScaleFactor;
   }
 
   // Update configuration
